@@ -31,6 +31,6 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SafeArea(child: WebViewView(controller: controller)));
+    return Scaffold(body: SafeArea(child: WebViewWidget (controller: controller)));
   }
 }
