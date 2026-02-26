@@ -4,15 +4,37 @@ workflows:
     max_build_duration: 30
     instance_type: mac_mini_m2
     environment:
-      android_signing:
+      groups:
         - android_release_keystore
-      vars:
-        APP_URL: "https://example.com"
       flutter: stable
+      vars:
+        PACKAGE_ID: com.example.app
+        APP_NAME: MyApp
+        APP_URL: https://example.com
     scripts:
-      - name: Get packages
+      - name: Get Flutter packages
         script: flutter pub get
+
+      - name: Set package ID
+        script: |
+          if [ -n "$PACKAGE_ID" ]; then
+            echo "Setting applicationId to $PACKAGE_ID"
+            sed -i '' "s/applicationId = \".*\"/applicationId = \"$PACKAGE_ID\"/" android/app/build.gradle.kts 2>/dev/null || \
+            sed -i "s/applicationId = \".*\"/applicationId = \"$PACKAGE_ID\"/" android/app/build.gradle.kts
+            sed -i '' "s/namespace = \".*\"/namespace = \"$PACKAGE_ID\"/" android/app/build.gradle.kts 2>/dev/null || \
+            sed -i "s/namespace = \".*\"/namespace = \"$PACKAGE_ID\"/" android/app/build.gradle.kts
+          fi
+
+      - name: Set app name
+        script: |
+          if [ -n "$APP_NAME" ]; then
+            echo "Setting app name to $APP_NAME"
+            sed -i '' "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml 2>/dev/null || \
+            sed -i "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml
+          fi
+
       - name: Build AAB
         script: flutter build appbundle --release
+
     artifacts:
       - build/app/outputs/bundle/release/app-release.aab
