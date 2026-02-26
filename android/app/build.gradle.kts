@@ -35,28 +35,25 @@ android {
         versionName = flutter.versionName
     }
 
-   signingConfigs {
-    create("release") {
-        val envStoreFile = System.getenv("CM_KEYSTORE_PATH")
-        val envStorePassword = System.getenv("CM_KEYSTORE_PASSWORD")
-        val envKeyAlias = System.getenv("CM_KEY_ALIAS")
-        val envKeyPassword = System.getenv("CM_KEY_PASSWORD")
+    signingConfigs {
+        create("release") {
+            val envStoreFile = System.getenv("CM_KEYSTORE_PATH")
+            val envStorePassword = System.getenv("CM_KEYSTORE_PASSWORD")
+            val envKeyAlias = System.getenv("CM_KEY_ALIAS")
+            val envKeyPassword = System.getenv("CM_KEY_PASSWORD")
 
-        keyAlias = envKeyAlias ?: (keystoreProperties["keyAlias"] as String)
-        keyPassword = envKeyPassword ?: (keystoreProperties["keyPassword"] as String)
-        storePassword = envStorePassword ?: (keystoreProperties["storePassword"] as String)
+            keyAlias = envKeyAlias ?: (keystoreProperties["keyAlias"] as String)
+            keyPassword = envKeyPassword ?: (keystoreProperties["keyPassword"] as String)
+            storePassword = envStorePassword ?: (keystoreProperties["storePassword"] as String)
 
-        val storePath = envStoreFile ?: (keystoreProperties["storeFile"] as String)
-        storeFile = file(storePath)
+            val storePath = envStoreFile ?: (keystoreProperties["storeFile"] as String)
+            storeFile = file(storePath)
+        }
     }
-}
 
     buildTypes {
-    release {
-        signingConfig = signingConfigs.getByName("release")
-    }
-}
-
+        release {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
