@@ -12,6 +12,5 @@ workflows:
         script: flutter pub get
       - name: Build AAB
         script: flutter build appbundle --release --dart-define=APP_URL=$APP_URL
-   artifacts:
-        - build/app/outputs/bundle/release/app-release.aab
-
+    artifacts:
+      - build/app/outputs/bundle/release/app-release.aab
