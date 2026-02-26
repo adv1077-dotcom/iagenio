@@ -1,20 +1,19 @@
 workflows:
   android-release:
     name: Android Release
-    max_build_duration: 30
+    max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
-      groups:
+      android_signing:
         - android_release_keystore
       flutter: stable
       vars:
-        PACKAGE_ID: com.example.app
-        APP_NAME: MyApp
-        APP_URL: https://example.com
+        PACKAGE_ID: "it.iscacchi.app"
+        APP_NAME: "iScacchi"
     scripts:
       - name: Get Flutter packages
-        script: flutter pub get
-
+        script: |
+          flutter pub get
       - name: Set package ID
         script: |
           if [ -n "$PACKAGE_ID" ]; then
@@ -24,7 +23,6 @@ workflows:
             sed -i '' "s/namespace = \".*\"/namespace = \"$PACKAGE_ID\"/" android/app/build.gradle.kts 2>/dev/null || \
             sed -i "s/namespace = \".*\"/namespace = \"$PACKAGE_ID\"/" android/app/build.gradle.kts
           fi
-
       - name: Set app name
         script: |
           if [ -n "$APP_NAME" ]; then
@@ -32,9 +30,15 @@ workflows:
             sed -i '' "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml 2>/dev/null || \
             sed -i "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml
           fi
-
       - name: Build AAB
-        script: flutter build appbundle --release
-
+        script: |
+          flutter build appbundle --release
     artifacts:
-      - build/app/outputs/bundle/release/app-release.aab
+      - build/app/outputs/bundle/release/*.aab
+    publishing:
+      email:
+        recipients:
+          - adv1077@gmail.com
+        notify:
+          success: true
+          failure: true
