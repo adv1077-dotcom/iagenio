@@ -32,9 +32,11 @@ workflows:
           fi
       - name: Set version code
         script: |
-          echo "Setting versionCode to $PROJECT_BUILD_NUMBER"
-          sed -i '' "s/versionCode = .*/versionCode = $PROJECT_BUILD_NUMBER/" android/app/build.gradle.kts 2>/dev/null || \
-          sed -i "s/versionCode = .*/versionCode = $PROJECT_BUILD_NUMBER/" android/app/build.gradle.kts
+          OFFSET=10
+          VERSION_CODE=$((PROJECT_BUILD_NUMBER + OFFSET))
+          echo "Setting versionCode to $VERSION_CODE"
+          sed -i '' "s/versionCode = .*/versionCode = $VERSION_CODE/" android/app/build.gradle.kts 2>/dev/null || \
+          sed -i "s/versionCode = .*/versionCode = $VERSION_CODE/" android/app/build.gradle.kts
       - name: Build AAB
         script: |
           flutter build appbundle --release
@@ -47,4 +49,3 @@ workflows:
         notify:
           success: true
           failure: true
-
