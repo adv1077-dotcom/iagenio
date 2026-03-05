@@ -30,6 +30,11 @@ workflows:
             sed -i '' "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml 2>/dev/null || \
             sed -i "s/android:label=\".*\"/android:label=\"$APP_NAME\"/" android/app/src/main/AndroidManifest.xml
           fi
+      - name: Set version code
+        script: |
+          echo "Setting versionCode to $PROJECT_BUILD_NUMBER"
+          cd android
+          echo "flutter.versionCode=$PROJECT_BUILD_NUMBER" >> local.properties
       - name: Build AAB
         script: |
           flutter build appbundle --release
